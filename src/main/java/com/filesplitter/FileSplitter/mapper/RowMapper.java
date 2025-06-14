@@ -1,7 +1,6 @@
 package com.filesplitter.FileSplitter.mapper;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -48,9 +47,8 @@ public class RowMapper {
 
   private String formatDate(String utcDate) {
     try {
-      // Assuming input date format is ISO 8601 (e.g., 2022-07-25T14:30:00Z)
-      LocalDateTime date = LocalDateTime.parse(utcDate.replace("Z", ""));
-      return date.atOffset(ZoneOffset.UTC).format(formatter);
+      OffsetDateTime date = OffsetDateTime.parse(utcDate);
+      return date.format(formatter);
     } catch (DateTimeParseException e) {
       // If the date is not in the expected format, return the original value
       return utcDate;

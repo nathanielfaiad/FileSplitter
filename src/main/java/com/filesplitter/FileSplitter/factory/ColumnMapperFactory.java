@@ -32,8 +32,7 @@ public class ColumnMapperFactory {
 
   private static final List<ColumnMapper> ALT_TRUE_COLUMN_MAPPERS = getColumnMappersForFileType(true);
 
-  public static List<ColumnMapper> getColumnMappers(String filename) {
-    boolean isAltFile = filename.contains("_ALT");
+  public static List<ColumnMapper> getColumnMappers(boolean isAltFile) {
     return isAltFile ? ALT_TRUE_COLUMN_MAPPERS : ALT_FALSE_COLUMN_MAPPERS;
   }
 

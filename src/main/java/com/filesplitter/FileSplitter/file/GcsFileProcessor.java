@@ -29,7 +29,15 @@ public class GcsFileProcessor {
 
   public void processFile(GcsMessage msg) {
     if (shouldProcess(msg)) {
-      List<ColumnMapper> columnMappers = ColumnMapperFactory.getColumnMappers(msg.getName());
+      FileNameExtractor.FileNameResult result = FileNameExtractor.extractFileName(msg.getName());
+
+      // TODO: Get RowMapper instead and add dateIndices to the ColumnMapper/Factory
+      List<ColumnMapper> columnMappers = ColumnMapperFactory.getColumnMappers(result.isAltFile());
+
+      // TODO: Update CsvToExcelService to accept InputStream and RowMapper and pass those in here
+
+      // TODO: Output the file to the correct GCS bucket
+
     }
   }
 
