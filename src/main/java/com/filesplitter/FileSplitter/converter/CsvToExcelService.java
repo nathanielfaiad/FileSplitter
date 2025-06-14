@@ -12,11 +12,11 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Slf4j
-public class CsvToExcelConverter {
+public class CsvToExcelService {
 
   private final RowMapper rowMapper;
 
-  public CsvToExcelConverter(RowMapper rowMapper) {
+  public CsvToExcelService(RowMapper rowMapper) {
     this.rowMapper = rowMapper;
   }
 
