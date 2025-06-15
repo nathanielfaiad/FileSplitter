@@ -1,5 +1,6 @@
 package com.filesplitter.FileSplitter.converter;
 
+import com.filesplitter.FileSplitter.constants.PrimeColumn;
 import com.filesplitter.FileSplitter.factory.ColumnMapperFactory;
 import com.filesplitter.FileSplitter.mapper.RowMapper;
 import com.opencsv.CSVReader;
@@ -24,7 +25,10 @@ public class CsvToExcelService {
   ) {
     // Get RowMapper/ColumnMappers for file
     // TODO: Fix dateIndices
-    RowMapper rowMapper = new RowMapper(ColumnMapperFactory.getColumnMappers(isAltFile), new int[]{});
+    RowMapper rowMapper = new RowMapper(
+        ColumnMapperFactory.getColumnMappers(isAltFile),
+        new int[]{PrimeColumn.FULL_DATE_OF_TRANSACTION.getIndex()}
+    );
 
     try {
       // Build Output Writer

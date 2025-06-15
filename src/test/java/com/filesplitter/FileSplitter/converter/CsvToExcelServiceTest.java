@@ -2,6 +2,7 @@ package com.filesplitter.FileSplitter.converter;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.filesplitter.FileSplitter.file.FileNameExtractor;
 import com.filesplitter.FileSplitter.output.LocalOutputService;
 import com.filesplitter.FileSplitter.output.OutputService;
 import java.io.File;
@@ -34,12 +35,13 @@ class CsvToExcelServiceTest {
 
     // Load the input CSV file
     File inputFile = new File("src/main/resources/static/" + fileName + ".csv");
+    FileNameExtractor.FileNameResult result = FileNameExtractor.extractFileName(inputFile.getName());
     try (InputStream inputStream = new FileInputStream(inputFile)) {
       // Load the template file
       ClassPathResource templateResource = new ClassPathResource("templates/prime_template.xlsx");
       try (InputStream templateStream = templateResource.getInputStream()) {
         // Convert CSV to Excel
-        SXSSFWorkbook workbook = csvToExcelService.convertCsvToExcel(inputStream, templateStream, false);
+        SXSSFWorkbook workbook = csvToExcelService.convertCsvToExcel(inputStream, templateStream, result.isAltFile());
 
         // Output the Excel file
         localOutputService.output(workbook, fileName);

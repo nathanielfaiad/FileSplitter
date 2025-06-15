@@ -31,6 +31,7 @@ public class PairMapper implements ColumnMapper {
             break;
           }
         } catch (NumberFormatException e) {
+          System.out.println();
           // ignore and move on to the next pair
         }
       }
