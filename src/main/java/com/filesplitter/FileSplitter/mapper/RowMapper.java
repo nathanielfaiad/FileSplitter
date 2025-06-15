@@ -30,7 +30,11 @@ public class RowMapper {
         if (isDateIndex(targetColumnIndexes[i])) {
           value = formatDate(value);
         }
-        excelRow.createCell(targetColumnIndexes[i]).setCellValue(value);
+
+        // TODO: Review the null-check
+        if (value != null) {
+          excelRow.createCell(targetColumnIndexes[i]).setCellValue(value);
+        }
       }
     }
     return excelRow;
