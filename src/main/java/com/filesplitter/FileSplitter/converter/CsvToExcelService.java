@@ -1,56 +1,57 @@
 package com.filesplitter.FileSplitter.converter;
 
+import com.filesplitter.FileSplitter.factory.ColumnMapperFactory;
 import com.filesplitter.FileSplitter.mapper.RowMapper;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
 
 @Slf4j
+@Service
 public class CsvToExcelService {
 
-  private final RowMapper rowMapper;
+  public SXSSFWorkbook convertCsvToExcel(
+      InputStream inputFileStream,
+      InputStream templateFileStream,
+      boolean isAltFile
+  ) {
+    // Get RowMapper/ColumnMappers for file
+    // TODO: Fix dateIndices
+    RowMapper rowMapper = new RowMapper(ColumnMapperFactory.getColumnMappers(isAltFile), new int[]{});
 
-  public CsvToExcelService(RowMapper rowMapper) {
-    this.rowMapper = rowMapper;
-  }
-
-  public void convertCsvToExcel(String csvFilePath) {
-    convertCsvToExcel(csvFilePath, null, 0);
-  }
-
-  public void convertCsvToExcel(String csvFilePath, String templateFilePath, int startRowIndex) {
-    try (SXSSFWorkbook workbook = templateFilePath != null
-        ? new SXSSFWorkbook(new XSSFWorkbook(new FileInputStream(templateFilePath)), 100)
-        : new SXSSFWorkbook(100)) {
-      Sheet sheet = workbook.getSheetAt(0);
-      if (sheet == null) {
-        sheet = workbook.createSheet();
+    try {
+      // Build Output Writer
+      XSSFWorkbook templateWorkbook = new XSSFWorkbook(templateFileStream);
+      Sheet templateSheet = templateWorkbook.getSheetAt(0);
+      int startRowIndex = templateSheet.getLastRowNum() + 1;
+      SXSSFWorkbook outputWorkbook = new SXSSFWorkbook(templateWorkbook, 1000);
+      Sheet outputSheet = outputWorkbook.getSheetAt(0);
+      if (outputSheet == null) {
+        outputSheet = outputWorkbook.createSheet();
       }
 
-      // Read CSV file
-      try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(new FileInputStream(csvFilePath)))
+      // Build CSV Reader and map data
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputFileStream));
+      try (CSVReader csvReader = new CSVReaderBuilder(bufferedReader)
           .withSkipLines(0)
           .build()) {
         String[] nextLine;
         int rowIndex = startRowIndex;
         while ((nextLine = csvReader.readNext()) != null) {
-          rowMapper.mapRow(sheet, nextLine, rowIndex++);
+          rowMapper.mapRow(outputSheet, nextLine, rowIndex++);
         }
       }
 
-      // Write workbook to file
-      String excelFilePath = csvFilePath.substring(0, csvFilePath.lastIndexOf('.')) + ".xlsx";
-      try (FileOutputStream outputStream = new FileOutputStream(excelFilePath)) {
-        workbook.write(outputStream);
-      }
+      return outputWorkbook;
     } catch (Exception e) {
-      log.error("Error converting CSV to Excel", e);
+      throw new RuntimeException(e);
     }
   }
 

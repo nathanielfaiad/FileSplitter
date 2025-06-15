@@ -1,16 +1,18 @@
 package com.filesplitter.FileSplitter.file;
 
 import com.filesplitter.FileSplitter.converter.CsvToExcelService;
-import com.filesplitter.FileSplitter.factory.ColumnMapperFactory;
-import com.filesplitter.FileSplitter.mapper.ColumnMapper;
 import com.filesplitter.FileSplitter.messaging.GcsMessage;
+import com.filesplitter.FileSplitter.output.OutputService;
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.NotificationInfo;
 import com.google.cloud.storage.Storage;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,23 +23,36 @@ public class GcsFileProcessor {
 
   private final CsvToExcelService csvToExcelService;
 
+  private final OutputService outputService;
+
   @Autowired
-  public GcsFileProcessor(Storage storage, CsvToExcelService csvToExcelService) {
+  public GcsFileProcessor(Storage storage, CsvToExcelService csvToExcelService, OutputService outputService) {
     this.storage = storage;
     this.csvToExcelService = csvToExcelService;
+    this.outputService = outputService;
   }
 
   public void processFile(GcsMessage msg) {
     if (shouldProcess(msg)) {
       FileNameExtractor.FileNameResult result = FileNameExtractor.extractFileName(msg.getName());
+      GoogleStorageResource gcsResource = getResource(msg);
 
-      // TODO: Get RowMapper instead and add dateIndices to the ColumnMapper/Factory
-      List<ColumnMapper> columnMappers = ColumnMapperFactory.getColumnMappers(result.isAltFile());
+      InputStream gcsInputStream;
+      try {
+        gcsInputStream = gcsResource.getInputStream();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
 
-      // TODO: Update CsvToExcelService to accept InputStream and RowMapper and pass those in here
+      InputStream templateStream;
+      try {
+        templateStream = new ClassPathResource("templates/prime_template.xlsx").getInputStream();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
 
-      // TODO: Output the file to the correct GCS bucket
-
+      SXSSFWorkbook workbook = csvToExcelService.convertCsvToExcel(gcsInputStream, templateStream, result.isAltFile());
+      outputService.output(workbook, result.fileName);
     }
   }
 
