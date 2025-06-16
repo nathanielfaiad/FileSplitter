@@ -24,7 +24,7 @@ public class CsvToExcelService {
       boolean isAltFile
   ) {
     // Get RowMapper/ColumnMappers for file
-    // TODO: Fix dateIndices
+    // TODO: Perhaps create a FileMapper class to capture dateIndices (AND ColumnMappers)
     RowMapper rowMapper = new RowMapper(
         ColumnMapperFactory.getFunctionalMappers(isAltFile),
         new int[]{PrimeColumn.FULL_DATE_OF_TRANSACTION.getIndex()}
@@ -44,7 +44,8 @@ public class CsvToExcelService {
       // Build CSV Reader and map data
       BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputFileStream));
       try (CSVReader csvReader = new CSVReaderBuilder(bufferedReader)
-          .withSkipLines(0)
+          // TODO: Perhaps create a FileMapper class to capture headerRowCount (AND ColumnMappers)
+          .withSkipLines(1)
           .build()) {
         String[] nextLine;
         int rowIndex = startRowIndex;

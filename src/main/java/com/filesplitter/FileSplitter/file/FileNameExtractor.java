@@ -1,5 +1,6 @@
 package com.filesplitter.FileSplitter.file;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class FileNameExtractor {
@@ -13,16 +14,12 @@ public class FileNameExtractor {
   }
 
   @Getter
+  @AllArgsConstructor
   public static class FileNameResult {
 
     public String fileName;
 
     public boolean isAltFile;
-
-    public FileNameResult(String fileName, boolean isAltFile) {
-      this.fileName = fileName;
-      this.isAltFile = isAltFile;
-    }
 
   }
 

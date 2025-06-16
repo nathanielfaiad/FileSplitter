@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 public class FunctionalMapper {
 
-  private Function<String[], List<OutputMapping>> mappingFunction;
+  private final Function<String[], List<OutputMapping>> mappingFunction;
 
   public FunctionalMapper(Function<String[], List<OutputMapping>> mappingFunction) {
     this.mappingFunction = mappingFunction;
