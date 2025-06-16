@@ -1,4 +1,4 @@
-package com.filesplitter.FileSplitter.converter;
+package com.filesplitter.FileSplitter.service;
 
 import com.filesplitter.FileSplitter.constants.PrimeColumn;
 import com.filesplitter.FileSplitter.factory.ColumnMapperFactory;
@@ -26,7 +26,7 @@ public class CsvToExcelService {
     // Get RowMapper/ColumnMappers for file
     // TODO: Perhaps create a FileMapper class to capture dateIndices (AND ColumnMappers)
     RowMapper rowMapper = new RowMapper(
-        ColumnMapperFactory.getFunctionalMappers(isAltFile),
+        ColumnMapperFactory.getColumnMappers(isAltFile),
         new int[]{PrimeColumn.FULL_DATE_OF_TRANSACTION.getIndex()}
     );
 

@@ -9,28 +9,28 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 public class RowMapper {
 
-  private final List<FunctionalMapper> columnMappers;
+  private final List<ColumnMapper> columnMappers;
 
   private final int[] dateIndices;
 
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
-  public RowMapper(List<FunctionalMapper> columnMappers, int[] dateIndices) {
+  public RowMapper(List<ColumnMapper> columnMappers, int[] dateIndices) {
     this.columnMappers = columnMappers;
     this.dateIndices = dateIndices;
   }
 
   public void mapRow(Sheet sheet, String[] csvRow, int rowIndex) {
     Row excelRow = sheet.createRow(rowIndex);
-    for (FunctionalMapper mapper : columnMappers) {
-      List<OutputMapping> mappedValues = mapper.mapValues(csvRow);
-      for (OutputMapping outputMapping : mappedValues) {
-        String value = outputMapping.getValue();
+    for (ColumnMapper mapper : columnMappers) {
+      List<ValueMapper> mappedValues = mapper.mapValues(csvRow);
+      for (ValueMapper valueMapper : mappedValues) {
+        String value = valueMapper.getValue();
         if (value != null) {
-          if (isDateIndex(outputMapping.getOutputIndex())) {
+          if (isDateIndex(valueMapper.getOutputIndex())) {
             value = formatDate(value);
           }
-          excelRow.createCell(outputMapping.getOutputIndex()).setCellValue(value);
+          excelRow.createCell(valueMapper.getOutputIndex()).setCellValue(value);
         }
       }
     }

@@ -1,4 +1,4 @@
-package com.filesplitter.FileSplitter.converter;
+package com.filesplitter.FileSplitter.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

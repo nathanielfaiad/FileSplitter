@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class OutputMapping {
+public class ValueMapper {
 
   private int outputIndex;
 

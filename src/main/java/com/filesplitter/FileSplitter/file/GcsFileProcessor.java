@@ -1,8 +1,8 @@
 package com.filesplitter.FileSplitter.file;
 
-import com.filesplitter.FileSplitter.converter.CsvToExcelService;
 import com.filesplitter.FileSplitter.messaging.GcsMessage;
 import com.filesplitter.FileSplitter.output.OutputService;
+import com.filesplitter.FileSplitter.service.CsvToExcelService;
 import com.google.cloud.spring.storage.GoogleStorageLocation;
 import com.google.cloud.spring.storage.GoogleStorageResource;
 import com.google.cloud.storage.NotificationInfo;
