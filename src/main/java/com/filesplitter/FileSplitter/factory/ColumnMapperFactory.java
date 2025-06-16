@@ -89,7 +89,8 @@ public class ColumnMapperFactory {
                 inputIndexes[0], // inputCodeIndex
                 inputIndexes[1], // inputAmountIndex
                 PrimeColumn.DEDUCTIBLE_ACCUM_CODE.getIndex(),
-                amountColumnIndex
+                amountColumnIndex,
+                PrimeColumn.DEDUCTIBLE_ADJUSTMENT_REASON_CODE.getIndex()
             );
             if (optionalList.isPresent()) {
               return optionalList.get();
@@ -121,8 +122,9 @@ public class ColumnMapperFactory {
                 row,
                 inputIndexes[0], // inputCodeIndex
                 inputIndexes[1], // inputAmountIndex
-                PrimeColumn.DEDUCTIBLE_ACCUM_CODE.getIndex(),
-                amountColumnIndex
+                PrimeColumn.OUT_OF_POCKET_ACCUM_CODE.getIndex(),
+                amountColumnIndex,
+                PrimeColumn.OUT_OF_POCKET_ADJUSTMENT_REASON_CODE.getIndex()
             );
             if (optionalList.isPresent()) {
               return optionalList.get();
@@ -140,7 +142,8 @@ public class ColumnMapperFactory {
       int inputCodeIndex,
       int inputAmountIndex,
       int outputCodeIndex,
-      int outputAmountIndex
+      int outputAmountIndex,
+      int adjustmentReasonCodeIndex
   ) {
     String value = row[inputAmountIndex];
     if (value != null && !value.trim().isEmpty()) {
@@ -153,6 +156,9 @@ public class ColumnMapperFactory {
 
               // Accum Code
               new OutputMapping(outputCodeIndex, row[inputCodeIndex]),
+
+              // Adjustment Reason Code
+              new OutputMapping(adjustmentReasonCodeIndex, "JUDISEED"),
 
               // Transaction Sign based on positive/negative amount
               new OutputMapping(PrimeColumn.TRANSACTION_SIGN.getIndex(), number > 0 ? "P" : "X")

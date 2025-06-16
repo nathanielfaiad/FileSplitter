@@ -26,7 +26,7 @@ public class CsvToExcelService {
     // Get RowMapper/ColumnMappers for file
     // TODO: Fix dateIndices
     RowMapper rowMapper = new RowMapper(
-        ColumnMapperFactory.getColumnMappers(isAltFile),
+        ColumnMapperFactory.getFunctionalMappers(isAltFile),
         new int[]{PrimeColumn.FULL_DATE_OF_TRANSACTION.getIndex()}
     );
 

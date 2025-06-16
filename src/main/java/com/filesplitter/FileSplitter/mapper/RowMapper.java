@@ -9,33 +9,31 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 public class RowMapper {
 
-  private final List<ColumnMapper> columnMappers;
+  private final List<FunctionalMapper> columnMappers;
 
   private final int[] dateIndices;
 
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
-  public RowMapper(List<ColumnMapper> columnMappers, int[] dateIndices) {
+  public RowMapper(List<FunctionalMapper> columnMappers, int[] dateIndices) {
     this.columnMappers = columnMappers;
     this.dateIndices = dateIndices;
   }
 
-  public Row mapRow(Sheet sheet, String[] csvRow, int rowIndex) {
+  public void mapRow(Sheet sheet, String[] csvRow, int rowIndex) {
     Row excelRow = sheet.createRow(rowIndex);
-    for (ColumnMapper mapper : columnMappers) {
-      String[] mappedValues = mapper.mapValue(csvRow);
-      int[] targetColumnIndexes = mapper.getTargetColumnIndexes();
-      for (int i = 0; i < mappedValues.length; i++) {
-        String value = mappedValues[i];
+    for (FunctionalMapper mapper : columnMappers) {
+      List<OutputMapping> mappedValues = mapper.mapValues(csvRow);
+      for (OutputMapping outputMapping : mappedValues) {
+        String value = outputMapping.getValue();
         if (value != null) {
-          if (isDateIndex(targetColumnIndexes[i])) {
+          if (isDateIndex(outputMapping.getOutputIndex())) {
             value = formatDate(value);
           }
-          excelRow.createCell(targetColumnIndexes[i]).setCellValue(value);
+          excelRow.createCell(outputMapping.getOutputIndex()).setCellValue(value);
         }
       }
     }
-    return excelRow;
   }
 
   private boolean isDateIndex(int index) {

@@ -31,7 +31,7 @@ class CsvToExcelServiceTest {
 
   @Test
   public void testCsvToExcelConversion() throws IOException {
-    String fileName = "BCBSKS_Pharm_Run_Out_ALT20250615";
+    String fileName = "BCBSKS_Pharm_Run_Out20250615";
 
     // Load the input CSV file
     File inputFile = new File("src/main/resources/static/" + fileName + ".csv");
