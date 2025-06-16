@@ -27,12 +27,10 @@ public class RowMapper {
       int[] targetColumnIndexes = mapper.getTargetColumnIndexes();
       for (int i = 0; i < mappedValues.length; i++) {
         String value = mappedValues[i];
-        if (isDateIndex(targetColumnIndexes[i])) {
-          value = formatDate(value);
-        }
-
-        // TODO: Review the null-check
         if (value != null) {
+          if (isDateIndex(targetColumnIndexes[i])) {
+            value = formatDate(value);
+          }
           excelRow.createCell(targetColumnIndexes[i]).setCellValue(value);
         }
       }
