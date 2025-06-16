@@ -12,7 +12,7 @@ public class FunctionalMapper {
     this.mappingFunction = mappingFunction;
   }
 
-  public static FunctionalMapper directMapper(int inputIndex, int outputIndex) {
+  public static FunctionalMapper directMapper(int outputIndex, int inputIndex) {
     return new FunctionalMapper(row -> {
       List<OutputMapping> outputMappings = new ArrayList<>();
       outputMappings.add(new OutputMapping(outputIndex, row[inputIndex]));
